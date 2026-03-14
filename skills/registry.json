@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "skills": [
+    {
+      "id": "questionnaire-assist",
+      "name": "Questionnaire Assist",
+      "category": "compliance",
+      "description": "Help structure security questionnaire responses from local context."
+    },
+    {
+      "id": "vendor-risk-review",
+      "name": "Vendor Risk Review",
+      "category": "vendor-risk",
+      "description": "Run a lightweight local vendor risk review workflow."
+    },
+    {
+      "id": "evidence-collection",
+      "name": "Evidence Collection",
+      "category": "compliance",
+      "description": "Organize local evidence collection artifacts and templates."
+    },
+    {
+      "id": "repo-security-review",
+      "name": "Repo Security Review",
+      "category": "engineering-security",
+      "description": "Generate a small repository-oriented security review brief."
+    }
+  ]
+}

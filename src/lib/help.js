@@ -1,0 +1,26 @@
+export function renderHelp() {
+  return [
+    'AGI.security CLI',
+    '',
+    'Local-first workspace and review scaffold for AGI.security workflows.',
+    '',
+    'Usage:',
+    '  agi <command>',
+    '',
+    'Commands:',
+    '  init           Initialize .agi-security in the current repo',
+    '  doctor         Check local runtime and AGI.security workspace health',
+    '  skills list    List built-in and local AGI.security skills',
+    '  review         Run the first lightweight repo review workflow',
+    '',
+    'Flags:',
+    '  -h, --help     Show help',
+    '  -v, --version  Show version',
+    '',
+    'Examples:',
+    '  agi init',
+    '  agi doctor',
+    '  agi skills list',
+    '  agi review',
+  ].join('\n');
+}

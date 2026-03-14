@@ -1,0 +1,11 @@
+node_modules/
+.agi-security/outputs/
+.agi-security/context/*.local.md
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+.DS_Store
+npm-debug.log*
