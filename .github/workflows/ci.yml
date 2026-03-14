@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    name: Smoke test (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [20, 22]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node ${{ matrix.node }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Show version
+        run: node ./bin/agi.js --version
+
+      - name: Show help
+        run: node ./bin/agi.js --help
+
+      - name: Init workspace
+        run: |
+          mkdir -p /tmp/agi-ci-test
+          cd /tmp/agi-ci-test
+          node $GITHUB_WORKSPACE/bin/agi.js init
+
+      - name: Doctor check
+        run: |
+          cd /tmp/agi-ci-test
+          node $GITHUB_WORKSPACE/bin/agi.js doctor
+
+      - name: Skills list
+        run: |
+          cd /tmp/agi-ci-test
+          node $GITHUB_WORKSPACE/bin/agi.js skills list
+
+      - name: Review (self)
+        run: |
+          cd /tmp/agi-ci-test
+          node $GITHUB_WORKSPACE/bin/agi.js review $GITHUB_WORKSPACE
+          echo "--- findings ---"
+          cat .agi-security/outputs/review-*.md | grep "^- \[" || true
