@@ -1,6 +1,5 @@
 node_modules/
-.agi-security/outputs/
-.agi-security/context/*.local.md
+.agi-security/
 .env
 .env.*
 *.pem
