@@ -325,7 +325,7 @@ function collectPotentialSecretLiterals(cwd) {
       continue;
     }
 
-    if (/example|sample|fixture|test|mock/i.test(relativePath)) {
+    if (/example|sample|fixture|test|mock|\.spec\.|\.test\.|__tests__/i.test(relativePath)) {
       continue;
     }
 

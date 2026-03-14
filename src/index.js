@@ -13,7 +13,7 @@ export async function run(args = []) {
   }
 
   if (command === '--version' || command === '-v' || command === 'version') {
-    console.log('@agisecurity/cli 0.1.3');
+    console.log('@agisecurity/cli 0.1.4');
     return;
   }
 

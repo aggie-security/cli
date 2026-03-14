@@ -4,6 +4,13 @@ All notable changes to `@agisecurity/cli` are documented here.
 
 ---
 
+## [0.1.4] — 2026-03-14
+
+### Fixed
+- **Spec/test file false positives** — `*.spec.*` and `*.test.*` files are now excluded from hardcoded secret scanning. Test fixtures with placeholder passwords (e.g. `password: 'password'` in unit tests) no longer trigger HIGH findings.
+
+---
+
 ## [0.1.3] — 2026-03-14
 
 ### Fixed

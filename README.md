@@ -168,8 +168,9 @@ The scanner has been validated against real codebases, not just synthetic fixtur
 | `validatorjs/validator.js` | ReDoS fixed → 3 accurate | scanner found ReDoS in its own regex |
 | `expressjs/express` | 4 findings, 0 false HIGHs | auth findings correctly demoted for example-only paths |
 | `OWASP/NodeGoat` (deliberately vulnerable) | 2 HIGH, 2 other | hardcoded secrets + committed private key caught correctly |
+| `OWASP/Juice Shop` (deliberately vulnerable) | 2 HIGH, 5 other | spec file false positives found and fixed (v0.1.4) |
 
-**7 loops. 0 false HIGHs across all production/OSS runs.**
+**8 loops. 0 false HIGHs across all production/OSS runs.**
 
 The product loop works: run → inspect findings → fix repo issues or tighten scanner → rerun → verify. Each loop makes both the tool and the repo better.
 

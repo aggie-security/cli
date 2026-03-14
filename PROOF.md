@@ -1,5 +1,5 @@
 # AGI.security CLI Proof — Review Loops
-Last updated: 2026-03-13 PT (Loop 3 added)
+Last updated: 2026-03-14 PT (Loop 8 added)
 
 ---
 
@@ -309,5 +309,54 @@ findings: 4
 
 ---
 
+---
+
+## Loop 8 — OWASP Juice Shop (March 14)
+**Target:** [`juice-shop/juice-shop`](https://github.com/juice-shop/juice-shop) — OWASP's full-stack deliberately vulnerable Node/Angular app (~11k GitHub stars). More complex than NodeGoat: production-grade architecture with real auth flows, payment handling, and a large test suite.
+
+```
+findings: 7
+[1] HIGH   — Potential hard-coded secret material appears in repository files
+[2] HIGH   — Private key or certificate-style files are present in the repository tree
+[3] MEDIUM — Auth/session boundary code paths need a closer review
+[4] MEDIUM — GitHub Actions workflows contain higher-risk trigger or permission patterns
+[5] MEDIUM — Package manifests are missing neighboring lockfiles
+[6] MEDIUM — Some dependencies resolve from remote git or URL sources
+[7] LOW    — Some dependencies use floating or broad version specifiers
+```
+
+### Signal quality
+- **Finding #1 (HIGH):** Real. `data/static/users.yml` contains `password: 'admin123'` — actual seed credentials in a non-test path. `login.component.ts` contains `testingPassword = 'IamUsedForTesting'` in production code — correct flag.
+- **Finding #2 (HIGH):** Real. `ctf.key` and `encryptionkeys/premium.key` are committed private keys — intentional for Juice Shop's CTF features but correctly flagged.
+- **Finding #3 (MEDIUM):** Real. `request.interceptor.ts` handles JWT/auth tokens; `.dependabot/config.yml` triggered on `token:` config key (minor, but not a false HIGH).
+- **Findings #4–7:** Accurate and appropriate severity.
+
+### Spec file false positive discovered and fixed (v0.1.4)
+First run included spec file hits in HIGH evidence:
+- `register.component.spec.ts: password: 'password'`
+- `two-factor-auth.component.spec.ts: secret: 'secret'`
+- `oauth.component.spec.ts: password: 'bW9jLnRzZXRAdHNldA=='`
+
+These are unit test fixtures — placeholder values expected in test files. After adding `*.spec.*` and `*.test.*` to the exclusion pattern, the HIGH finding retains only real production-code evidence.
+
+---
+
+## Summary table
+
+| Loop | Target | Findings | False HIGHs | Key outcome |
+|------|--------|----------|-------------|-------------|
+| 1 | CLI itself | 2 real → 0 after fixes | 0 | product drives own cleanup |
+| 2 | Full workspace | 4 → 2 after tightening | 0 | scanner improves with real feedback |
+| 3 | External local repo | Path bug → 0 clean | 0 | `agi review <path>` path-scoping fixed |
+| 4 | node-express-boilerplate | 2 accurate | 0 | cold scan on unknown codebase |
+| 5 | validatorjs/validator.js | ReDoS fixed → 3 accurate | 0 | scanner found ReDoS in its own regex |
+| 6 | expressjs/express | 4 accurate | 0 | example-path auth demotion fixed |
+| 7 | OWASP/NodeGoat (vulnerable) | 2 HIGH + 2 other | 0 | hardcoded secrets + private key caught |
+| 8 | OWASP/Juice Shop (vulnerable) | 2 HIGH + 5 other | 0 | spec file FP found and fixed (v0.1.4) |
+
+**8 loops. 0 false HIGHs across all production/OSS runs.**
+
+---
+
 ## Next step
-`npm login` + `npm publish` — the CLI is publish-ready at v0.1.3. External users can then run `npx @agisecurity/cli review` on any repo.
+`npm login` + `npm publish` to ship `@agisecurity/cli` v0.1.4 to the public npm registry.
