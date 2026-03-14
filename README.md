@@ -1,5 +1,7 @@
 # @agisecurity/cli
 
+[![CI](https://github.com/aggie-security/cli/actions/workflows/ci.yml/badge.svg)](https://github.com/aggie-security/cli/actions/workflows/ci.yml)
+
 Local-first security CLI for your repo. Run a security review in 30 seconds — no signup, no cloud, everything stays on your machine.
 
 ```bash
