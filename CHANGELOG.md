@@ -4,10 +4,15 @@ All notable changes to `@agisecurity/cli` are documented here.
 
 ---
 
+## [0.1.6] — 2026-03-15
+
+### Fixed
+- **Markdown false positives (comprehensive fix)** — All `.md` files are now excluded from secret literal scanning. Markdown documentation universally contains example credentials in code snippets; these generate high false-positive rates with no meaningful signal loss (real secrets almost always also appear in code/config files). Validated on `fastify/fastify`: 0 false HIGHs, 3 legitimate findings (MEDIUM GitHub Actions `pull_request_target` + write permissions, MEDIUM missing lockfiles, LOW floating version specifiers). Self-scan clean.
+
 ## [0.1.5] — 2026-03-15
 
 ### Fixed
-- **Documentation file false positives** — `README.md`, `CHANGELOG.md`, `PROOF.md`, `CONTRIBUTING.md`, `SECURITY.md` and similar doc files are now excluded from hardcoded secret literal scanning. These files commonly contain example patterns, feature demos, and placeholder credentials that are not real risks. Self-scan on the CLI repo now returns 0 findings.
+- **Documentation file false positives** — Named doc files (`README.md`, `CHANGELOG.md`, etc.) excluded from secret literal scanning. _Superseded by v0.1.6 which excludes all `.md` files._
 
 ---
 

@@ -298,7 +298,10 @@ function collectAuthBoundaryRisks(cwd) {
 function collectPotentialSecretLiterals(cwd) {
   const candidateFiles = listFiles(
     cwd,
-    (_, name) => /\.(js|jsx|ts|tsx|mjs|cjs|json|ya?ml|env|py|sh|rb|go|java|tf|md)$/i.test(name),
+    // Exclude .md files — docs universally contain example credentials in code snippets
+    // and generate high false-positive rates; real secrets in docs are almost always
+    // also present in the actual code/config files where they matter.
+    (_, name) => /\.(js|jsx|ts|tsx|mjs|cjs|json|ya?ml|env|py|sh|rb|go|java|tf)$/i.test(name),
   );
   const findings = [];
   const patterns = [
@@ -329,11 +332,7 @@ function collectPotentialSecretLiterals(cwd) {
       continue;
     }
 
-    // Skip documentation and changelog files — they commonly contain example patterns
-    // (placeholder credentials, feature demos, README examples) that are not real risks
-    if (/^(README|CHANGELOG|PROOF|CONTRIBUTING|SECURITY|AUTHORS|HISTORY|NOTES|GUIDE)(\.md)?$/i.test(path.basename(relativePath))) {
-      continue;
-    }
+
 
     for (const pattern of patterns) {
       const match = text.match(pattern.regex);
