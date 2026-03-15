@@ -1,6 +1,6 @@
 {
   "name": "@agisecurity/cli",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "AGI.security local-first CLI — repo security reviews, workspace init, and skill registry.",
   "type": "module",
   "bin": {

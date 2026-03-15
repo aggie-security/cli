@@ -4,6 +4,11 @@ All notable changes to `@agisecurity/cli` are documented here.
 
 ---
 
+## [0.1.7] — 2026-03-15
+
+### Fixed
+- **Identifier/field-name false positives** — `hardcoded_credential_var` and `api_key_literal` patterns now skip values that look like plain identifiers or field names (e.g. `PASSWORD_FIELD = "password"`, `TOKEN = "_password_reset_token"`). Real credentials contain digits, mixed case, or special characters; pure alpha+underscore values are not flagged. Validated on `django/django`: 0 false HIGHs, 3 legitimate findings (CI permissions, missing lockfiles, floating versions). Now validated across: expressjs/express, fastify/fastify, django/django — 0 false HIGHs across all runs.
+
 ## [0.1.6] — 2026-03-15
 
 ### Fixed

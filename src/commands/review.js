@@ -304,12 +304,18 @@ function collectPotentialSecretLiterals(cwd) {
     (_, name) => /\.(js|jsx|ts|tsx|mjs|cjs|json|ya?ml|env|py|sh|rb|go|java|tf)$/i.test(name),
   );
   const findings = [];
+  // Values that look like identifier/field names rather than real credentials:
+  // - purely alphabetic + underscores only (e.g. "password", "password1_field_name", "_password_reset_token")
+  // - no digits mixed with letters in a high-entropy pattern
+  // Real credentials almost always contain digits, mixed case, or special chars.
+  const looksLikeIdentifier = (value) => /^[_a-zA-Z][_a-zA-Z0-9]*$/.test(value) && !/[0-9]/.test(value.replace(/^_+/, '').slice(0, 4));
+
   const patterns = [
     // Keyword immediately before assignment (e.g. secret = "...", token: "...")
-    { type: 'api_key_literal', regex: /(api[_-]?key|secret|token|client[_-]?secret)\s*[:=]\s*['"][A-Za-z0-9_\-\/+=]{8,}['"]/i },
+    { type: 'api_key_literal', regex: /(api[_-]?key|secret|token|client[_-]?secret)\s*[:=]\s*['"]([A-Za-z0-9_\-\/+=]{8,})['"]/i },
     // Variable name contains secret/password/key/token (e.g. SECRET_KEY = "...", DB_PASSWORD = "...")
     // Excludes values with spaces (error messages, UI strings) — real credentials almost never contain spaces
-    { type: 'hardcoded_credential_var', regex: /\b(?:[A-Za-z_][A-Za-z0-9_]*)?(SECRET|PASSWORD|PASSWD|API_KEY|AUTH_TOKEN|ACCESS_KEY|PRIVATE_KEY|CLIENT_SECRET)[A-Za-z0-9_]*\s*[:=]\s*['"][^\s'"]{6,}['"]/i },
+    { type: 'hardcoded_credential_var', regex: /\b(?:[A-Za-z_][A-Za-z0-9_]*)?(SECRET|PASSWORD|PASSWD|API_KEY|AUTH_TOKEN|ACCESS_KEY|PRIVATE_KEY|CLIENT_SECRET)[A-Za-z0-9_]*\s*[:=]\s*['"]([^\s'"]{6,})['"]/i },
     // jwt/algorithm none bypass pattern
     { type: 'jwt_none_alg', regex: /algorithms\s*:\s*\[([^\]]*['"]none['"][^\]]*)\]/i },
     { type: 'private_key_block', regex: /-----BEGIN (?:RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----/ },
@@ -337,6 +343,12 @@ function collectPotentialSecretLiterals(cwd) {
     for (const pattern of patterns) {
       const match = text.match(pattern.regex);
       if (match) {
+        // For patterns that capture the value (group 2 for api_key_literal/hardcoded_credential_var),
+        // skip if the value looks like a plain identifier/field name rather than real secret material.
+        const capturedValue = match[2];
+        if (capturedValue && looksLikeIdentifier(capturedValue)) {
+          continue;
+        }
         findings.push({
           relativePath,
           type: pattern.type,
