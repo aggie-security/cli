@@ -4,6 +4,13 @@ All notable changes to `@agisecurity/cli` are documented here.
 
 ---
 
+## [0.1.5] — 2026-03-15
+
+### Fixed
+- **Documentation file false positives** — `README.md`, `CHANGELOG.md`, `PROOF.md`, `CONTRIBUTING.md`, `SECURITY.md` and similar doc files are now excluded from hardcoded secret literal scanning. These files commonly contain example patterns, feature demos, and placeholder credentials that are not real risks. Self-scan on the CLI repo now returns 0 findings.
+
+---
+
 ## [0.1.4] — 2026-03-14
 
 ### Fixed

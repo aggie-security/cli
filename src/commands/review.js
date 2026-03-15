@@ -329,6 +329,12 @@ function collectPotentialSecretLiterals(cwd) {
       continue;
     }
 
+    // Skip documentation and changelog files — they commonly contain example patterns
+    // (placeholder credentials, feature demos, README examples) that are not real risks
+    if (/^(README|CHANGELOG|PROOF|CONTRIBUTING|SECURITY|AUTHORS|HISTORY|NOTES|GUIDE)(\.md)?$/i.test(path.basename(relativePath))) {
+      continue;
+    }
+
     for (const pattern of patterns) {
       const match = text.match(pattern.regex);
       if (match) {
