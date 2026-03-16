@@ -4,6 +4,11 @@ All notable changes to `@agisecurity/cli` are documented here.
 
 ---
 
+## [0.1.8] — 2026-03-15
+
+### Fixed
+- **Dot-notation config key false positives** — Values like `"action_dispatch.secret_key_base"` (Rails middleware config keys) no longer trigger HIGH findings. Dot-notation strings that are purely alpha+underscore+dot with no high-entropy digit sequences are now recognized as config key identifiers, not credentials. Validated on `rails/rails`: 0 false HIGHs.
+
 ## [0.1.7] — 2026-03-15
 
 ### Fixed

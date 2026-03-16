@@ -1,5 +1,5 @@
 # AGI.security CLI Proof — Review Loops
-Last updated: 2026-03-15 PT (Loops 9-12 added, scorecard updated)
+Last updated: 2026-03-15 PT (Loop 13 added, 9 repos / 5 languages / 0 false HIGHs)
 
 ---
 
@@ -447,3 +447,50 @@ Both findings are legitimate. Gin commits test PEM key files to the repo. These 
 | gin-gonic/gin | 0 | 2 | All legitimate |
 
 **Total: 8 repos, 0 false HIGHs across all runs.**
+
+---
+
+## Loop 13 — rails/rails (March 15, v0.1.8)
+**Target:** `rails/rails` (Ruby on Rails framework, one of the most-used web frameworks globally)
+**CLI version:** 0.1.8
+
+**Before (v0.1.7):**
+```
+findings: 4
+[1] HIGH   — FALSE POSITIVE: SECRET_KEY_BASE = "action_dispatch.secret_key_base"
+[2] MEDIUM — GitHub Actions permissions
+[3] MEDIUM — Missing lockfiles
+[4] LOW    — Floating versions
+```
+
+**Root cause:** `hardcoded_credential_var` matched `SECRET_KEY_BASE = "action_dispatch.secret_key_base"`. The value is a dot-notation Rails config key (env variable name), not a real credential. The previous identifier check only covered pure alpha+underscore; dot-notation config strings slipped through.
+
+**Fix applied (v0.1.8):** Extended `looksLikeIdentifier` to also recognize dot-notation config key strings (alpha+underscore+dot, no high-entropy digit sequences).
+
+**After (v0.1.8):**
+```
+findings: 3
+[1] MEDIUM — GitHub Actions: higher-risk triggers/permissions
+[2] MEDIUM — Package manifests missing lockfiles
+[3] LOW    — Floating version specifiers
+```
+
+Zero false positives. All findings legitimate.
+
+---
+
+## Running Scorecard (as of March 15, v0.1.8)
+
+| Repo | Lang | False HIGHs | Legitimate findings |
+|---|---|---|---|
+| packages/cli (self) | Node.js | 0 | 0 |
+| clawd workspace | Node.js | 0 | 2 |
+| expressjs/express | Node.js | 0 | 0 |
+| DVWA | PHP | 0 | 5 |
+| OWASP Juice Shop | Node.js | 0 | 3 |
+| fastify/fastify | Node.js | 0 | 3 |
+| django/django | Python | 0 | 3 |
+| gin-gonic/gin | Go | 0 | 2 |
+| rails/rails | Ruby | 0 | 3 |
+
+**Total: 9 repos, 5 languages, 0 false HIGHs across all runs.**

@@ -308,7 +308,14 @@ function collectPotentialSecretLiterals(cwd) {
   // - purely alphabetic + underscores only (e.g. "password", "password1_field_name", "_password_reset_token")
   // - no digits mixed with letters in a high-entropy pattern
   // Real credentials almost always contain digits, mixed case, or special chars.
-  const looksLikeIdentifier = (value) => /^[_a-zA-Z][_a-zA-Z0-9]*$/.test(value) && !/[0-9]/.test(value.replace(/^_+/, '').slice(0, 4));
+  const looksLikeIdentifier = (value) => {
+    // Pure alpha+underscore identifiers (e.g. "password", "password1_field_name")
+    if (/^[_a-zA-Z][_a-zA-Z0-9]*$/.test(value) && !/[0-9]/.test(value.replace(/^_+/, '').slice(0, 4))) return true;
+    // Dot-notation config keys (e.g. "action_dispatch.secret_key_base", "some.config.key")
+    // These are env/config key names, not real credential values
+    if (/^[a-zA-Z_][a-zA-Z0-9_.]*$/.test(value) && value.includes('.') && !/[0-9]{3,}/.test(value)) return true;
+    return false;
+  };
 
   const patterns = [
     // Keyword immediately before assignment (e.g. secret = "...", token: "...")
