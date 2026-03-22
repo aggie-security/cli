@@ -1,3 +1,29 @@
+export function renderReviewHelp() {
+  return [
+    'AGI.security CLI — review',
+    '',
+    'Run a lightweight local repo-security review.',
+    '',
+    'Usage:',
+    '  agi review [target-path]',
+    '',
+    'Arguments:',
+    '  target-path    Optional path to the repo to review (defaults to current directory)',
+    '',
+    'Flags:',
+    '  -h, --help     Show this help',
+    '',
+    'Examples:',
+    '  agi review',
+    '  agi review ~/projects/my-app',
+    '  agi review ../other-repo',
+    '',
+    'Notes:',
+    '  Run `agi init` in the current directory first to initialize the .agi-security workspace.',
+    '  The workspace config (.agi-security/) stays in the current dir; the review scans target-path.',
+  ].join('\n');
+}
+
 export function renderHelp() {
   return [
     'AGI.security CLI',
